@@ -7,6 +7,7 @@ import org.wildcodeschool.myblog.model.Article;
 import org.wildcodeschool.myblog.repository.ArticleRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,6 +23,15 @@ public class ArticleController {
     @GetMapping
     public ResponseEntity<List<Article>> getAllArticles() {
         List<Article> articles = articleRepository.findAll();
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/last-created")
+    public ResponseEntity<List<Article>> getLastCreatedArticles() {
+        List<Article> articles = articleRepository.findTop5ByOrderByCreatedAtDesc();
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -44,6 +54,32 @@ public class ArticleController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/search-content")
+    public ResponseEntity<List<Article>> getArticlesByContent(@RequestParam String searchTerms) {
+        List<Article> articles = articleRepository.findByContent(searchTerms);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+
+    @PostMapping("/create-articles-by-date")
+    public ResponseEntity<List<Article>> createArticlesByDate(@RequestParam("date") LocalDateTime date) {
+        // Create 5 articles using the provided date
+        List<Article> articles = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            Article article = new Article();
+            article.setTitle("Title of article" + i);
+            article.setContent("Content of article" + i);
+            article.setCreatedAt(date);
+            article.setUpdatedAt(date);
+            articles.add(article);
+        }
+
+        List<Article> savedArticles = articleRepository.saveAll(articles);
+        return ResponseEntity.ok(savedArticles);
     }
 
     @PostMapping
@@ -72,12 +108,10 @@ public class ArticleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
-
         Article article = articleRepository.findById(id).orElse(null);
         if (article == null) {
             return ResponseEntity.notFound().build();
         }
-
         articleRepository.delete(article);
         return ResponseEntity.noContent().build();
     }
