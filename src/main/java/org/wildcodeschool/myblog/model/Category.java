@@ -2,6 +2,8 @@ package org.wildcodeschool.myblog.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Category {
 
@@ -11,6 +13,9 @@ public class Category {
 
     @Column(nullable = false, length = 50)
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<Article> articles;
 
     public Long getId() {
         return id;
