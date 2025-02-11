@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import org.wildcodeschool.myblog.dto.CategoryDTO;
 import org.wildcodeschool.myblog.model.Category;
 import org.wildcodeschool.myblog.repository.CategoryRepository;
 
@@ -19,6 +20,13 @@ public class CategoryController {
         this.categoryRepository = categoryRepository;
     }
 
+    private CategoryDTO convertToDTO(Category category) {
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setId(category.getId());
+        categoryDTO.setName(category.getName());
+        return categoryDTO;
+    }
+
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
@@ -29,30 +37,30 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody Category category) {
         Category categoryCreated = categoryRepository.save(category);
-        return ResponseEntity.ok(categoryCreated);
+        return ResponseEntity.ok(convertToDTO(categoryCreated));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@RequestBody Category categoryDetails, @PathVariable Long id) {
+    public ResponseEntity<CategoryDTO> updateCategory(@RequestBody Category categoryDetails, @PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
         category.setName(categoryDetails.getName());
         Category updatedCategory = categoryRepository.save(category);
-        return ResponseEntity.ok(updatedCategory);
+        return ResponseEntity.ok(convertToDTO(updatedCategory));
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Category> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
         categoryRepository.delete(category);
-        return ResponseEntity.ok(category);
+        return ResponseEntity.noContent().build();
     }
 }
