@@ -11,7 +11,7 @@ import org.wildcodeschool.myblog.repository.ArticleRepository;
 import org.wildcodeschool.myblog.repository.CategoryRepository;
 import org.wildcodeschool.myblog.repository.ImageRepository;
 import org.springframework.format.annotation.DateTimeFormat;
-import exception.ResourceNotFoundException;
+import org.wildcodeschool.myblog.exception.ResourceNotFoundException;
 
 
 import java.time.LocalDateTime;
