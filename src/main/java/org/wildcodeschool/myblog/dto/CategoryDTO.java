@@ -1,5 +1,6 @@
 package org.wildcodeschool.myblog.dto;
 
+
 public class CategoryDTO {
     private Long id;
     private String name;
@@ -7,7 +8,6 @@ public class CategoryDTO {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
