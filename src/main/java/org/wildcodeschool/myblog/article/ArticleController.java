@@ -28,13 +28,11 @@ public class ArticleController {
         return articleRepo.findAll();
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<Article> getOne(@PathVariable Long id) {
         Article article = articleRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
         return ResponseEntity.ok(article);
     }
-
 
     @PostMapping
     public ResponseEntity<String> addArticle(@RequestBody CreateArticleDTO dto) {
@@ -43,11 +41,9 @@ public class ArticleController {
         return ResponseEntity.ok("Article added");
     }
 
-
     @PostMapping("/add-with-ids")
     public ResponseEntity<String> addArticleWithIds(@Valid @RequestBody CreateArticleWithIdsDTO dto) {
         articleService.addArticle(dto);
         return ResponseEntity.ok("Article with ids added");
     }
-
 }
